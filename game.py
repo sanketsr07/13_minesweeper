@@ -63,7 +63,16 @@ class Minesweeper:
                 self.board.toggle_flag((r, c))
                 continue
 
-            if self.board.reveal((r, c)):
+            pos = (r, c)
+            if pos in self.board.flags:
+                print("That cell is flagged; unflag it before revealing.")
+                continue
+            if pos in self.board.revealed:
+                print("That cell is already revealed.")
+                continue
+
+            revealed_before = len(self.board.revealed)
+            if self.board.reveal(pos):
                 self.display(reveal_mines=True)
                 print("BOOM! You hit a mine.")
                 return
@@ -71,3 +80,7 @@ class Minesweeper:
                 self.display()
                 print("You cleared the board!")
                 return
+
+            revealed_count = len(self.board.revealed) - revealed_before
+            cell_word = "cell" if revealed_count == 1 else "cells"
+            print(f"Revealed {revealed_count} {cell_word}.")
